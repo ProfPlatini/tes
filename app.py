@@ -33,13 +33,13 @@ def retorno():
     resposta = agente.run(pergunta)
     return jsonify({"resposta":resposta.content})
 
-@app.route("/reservar",methods=['POST'])
+@app.route("/reservas",methods=['POST'])
 def reservar():
     dados = request.get_json()
     supabase.table("reservas").insert(dados).execute()
     return jsonify({"mensagem":"Dados inseridos com sucesso!"})
 
-@app.route("/reservar", methods=['GET'])
+@app.route("/reservas", methods=['GET'])
 def listar():
     resultado = supabase.table("reservas").select("*").execute()
     return jsonify(resultado.data)
