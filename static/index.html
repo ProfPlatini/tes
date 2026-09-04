@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Travesseiro Nervoso</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f1a;
+            color: #f0f0f0;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAV ========== */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(15, 15, 26, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(233, 69, 96, 0.2);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 40px;
+        }
+        nav .logo { display: flex; align-items: center; gap: 10px; }
+        nav .logo span { font-size: 1.4em; font-weight: bold; color: #e94560; }
+        nav .links { display: flex; gap: 28px; }
+        nav .links a {
+            color: #ccc; text-decoration: none; font-size: 0.95em;
+            transition: color 0.2s;
+        }
+        nav .links a:hover { color: #e94560; }
+
+        /* ========== HERO ========== */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(15,15,26,0.7), rgba(15,15,26,0.5)),
+                        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&q=80') center/cover no-repeat;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 120px 20px 80px;
+        }
+        .hero h1 {
+            font-size: 3.2em; color: #fff; margin-bottom: 10px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .hero .slogan {
+            font-size: 1.3em; color: #e94560; font-style: italic; margin-bottom: 30px;
+        }
+        .hero p { max-width: 600px; color: #bbb; line-height: 1.7; margin-bottom: 35px; }
+        .hero .btn-hero {
+            padding: 16px 40px; border: none; border-radius: 30px;
+            background: linear-gradient(135deg, #e94560, #c23152);
+            color: #fff; font-size: 1.1em; font-weight: bold; cursor: pointer;
+            text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .hero .btn-hero:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(233,69,96,0.4); }
+
+        /* ========== SEÇÕES ========== */
+        section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+        .section-title {
+            text-align: center; margin-bottom: 50px;
+        }
+        .section-title h2 {
+            font-size: 2.2em; color: #fff; margin-bottom: 8px;
+        }
+        .section-title p { color: #888; font-size: 1.05em; }
+
+        /* ========== QUARTOS ========== */
+        .quartos-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        .quarto-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .quarto-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .quarto-card img {
+            width: 100%; height: 220px; object-fit: cover;
+        }
+        .quarto-card .info { padding: 22px; }
+        .quarto-card .info h3 { font-size: 1.3em; margin-bottom: 6px; }
+        .quarto-card .info .preco {
+            color: #e94560; font-size: 1.2em; font-weight: bold; margin-bottom: 10px;
+        }
+        .quarto-card .info p { color: #999; font-size: 0.92em; line-height: 1.5; }
+        .quarto-card .info .btn-reservar {
+            display: inline-block; margin-top: 14px; padding: 10px 24px;
+            border: 2px solid #e94560; border-radius: 25px;
+            color: #e94560; text-decoration: none; font-weight: bold;
+            transition: all 0.2s; cursor: pointer; background: transparent;
+        }
+        .quarto-card .info .btn-reservar:hover {
+            background: #e94560; color: #fff;
+        }
+
+        /* ========== SERVIÇOS ========== */
+        .servicos-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+        .servico-card {
+            text-align: center; padding: 30px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; transition: transform 0.3s;
+        }
+        .servico-card:hover { transform: translateY(-4px); }
+        .servico-card .icone { font-size: 2.8em; margin-bottom: 12px; }
+        .servico-card h4 { margin-bottom: 6px; }
+        .servico-card p { color: #888; font-size: 0.88em; }
+
+        /* ========== RESERVA ========== */
+        .reserva-section {
+            background: rgba(233,69,96,0.06);
+            border: 1px solid rgba(233,69,96,0.15);
+            border-radius: 20px; padding: 50px 40px; max-width: 700px; margin: 0 auto;
+        }
+        .reserva-form { display: flex; flex-direction: column; gap: 18px; }
+        .reserva-form .row { display: flex; gap: 16px; }
+        .reserva-form .field { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .reserva-form label { color: #ccc; font-size: 0.9em; }
+        .reserva-form input, .reserva-form select {
+            padding: 12px 16px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: #fff; font-size: 0.95em; outline: none;
+            transition: border-color 0.2s;
+        }
+        .reserva-form input:focus, .reserva-form select:focus {
+            border-color: #e94560;
+        }
+        .reserva-form select option { background: #1a1a2e; color: #fff; }
+        .reserva-form .btn-confirmar {
+            padding: 14px; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, #e94560, #c23152);
+            color: #fff; font-size: 1.05em; font-weight: bold;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 6px;
+        }
+        .reserva-form .btn-confirmar:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(233,69,96,0.4); }
+        .reserva-form .btn-confirmar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .msg-sucesso {
+            display: none; text-align: center; padding: 20px;
+            color: #4ecdc4; font-size: 1.1em; font-weight: bold;
+        }
+        .msg-erro {
+            display: none; text-align: center; padding: 14px;
+            color: #e94560; font-size: 0.95em;
+        }
+
+        /* ========== MINHAS RESERVAS ========== */
+        .reservas-lista { display: flex; flex-direction: column; gap: 14px; max-width: 700px; margin: 0 auto; }
+        .reserva-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 18px 24px;
+        }
+        .reserva-item .dados { display: flex; flex-direction: column; gap: 4px; }
+        .reserva-item .dados .nome { font-weight: bold; font-size: 1.05em; }
+        .reserva-item .dados .detalhes { color: #888; font-size: 0.9em; }
+        .reserva-item .quarto-tag {
+            padding: 6px 16px; border-radius: 20px;
+            background: rgba(233,69,96,0.15); color: #e94560;
+            font-weight: bold; font-size: 0.9em;
+        }
+        .sem-reservas { text-align: center; color: #666; padding: 30px; font-style: italic; }
+
+        /* ========== CHAT FLOTANTE ========== */
+        .chat-toggle {
+            position: fixed; bottom: 30px; right: 30px; z-index: 200;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg, #e94560, #c23152);
+            border: none; color: #fff; font-size: 1.6em; cursor: pointer;
+            box-shadow: 0 6px 25px rgba(233,69,96,0.5);
+            transition: transform 0.2s;
+        }
+        .chat-toggle:hover { transform: scale(1.1); }
+
+        .chat-panel {
+            position: fixed; bottom: 100px; right: 30px; z-index: 200;
+            width: 380px; height: 520px;
+            background: rgba(22, 22, 40, 0.97);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(233,69,96,0.2);
+            border-radius: 18px; overflow: hidden;
+            display: none; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+        .chat-panel.aberto { display: flex; }
+        .chat-panel-header {
+            background: linear-gradient(135deg, #e94560, #c23152);
+            padding: 16px 20px; display: flex; align-items: center;
+            justify-content: space-between;
+        }
+        .chat-panel-header h3 { color: #fff; font-size: 1em; }
+        .chat-panel-header .fechar {
+            background: none; border: none; color: #fff; font-size: 1.3em;
+            cursor: pointer;
+        }
+        .chat-msgs {
+            flex: 1; overflow-y: auto; padding: 16px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .chat-msgs::-webkit-scrollbar { width: 4px; }
+        .chat-msgs::-webkit-scrollbar-thumb { background: rgba(233,69,96,0.4); border-radius: 2px; }
+        .chat-msg {
+            max-width: 82%; padding: 10px 14px; border-radius: 14px;
+            font-size: 0.88em; line-height: 1.5; animation: fadeIn 0.3s;
+            word-wrap: break-word;
+        }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        .chat-msg.hotel {
+            align-self: flex-start; background: #2a2a40; color: #eee;
+            border-bottom-left-radius: 3px;
+        }
+        .chat-msg.usuario {
+            align-self: flex-end; background: linear-gradient(135deg, #e94560, #c23152);
+            color: #fff; border-bottom-right-radius: 3px;
+        }
+        .chat-msg .remetente {
+            font-size: 0.75em; font-weight: bold; margin-bottom: 3px;
+        }
+        .chat-msg.hotel .remetente { color: #e94560; }
+        .chat-msg.usuario .remetente { color: rgba(255,255,255,0.7); text-align: right; }
+        .chat-welcome {
+            text-align: center; color: #666; padding: 20px;
+            font-style: italic; font-size: 0.9em;
+        }
+        .chat-typing {
+            display: none; align-self: flex-start;
+            background: #2a2a40; padding: 10px 14px; border-radius: 14px;
+            border-bottom-left-radius: 3px; font-size: 0.85em;
+        }
+        .chat-typing .remetente { color: #e94560; font-weight: bold; font-size: 0.8em; margin-bottom: 4px; }
+        .chat-typing .pontos { display: flex; gap: 4px; align-items: center; }
+        .chat-typing .ponto {
+            width: 6px; height: 6px; background: #e94560; border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        .chat-typing .ponto:nth-child(2) { animation-delay: 0.2s; }
+        .chat-typing .ponto:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+        .chat-input-area {
+            padding: 12px; display: flex; gap: 8px;
+            background: rgba(0,0,0,0.25); border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .chat-input-area input {
+            flex: 1; padding: 10px 14px; border: none; border-radius: 20px;
+            background: rgba(255,255,255,0.08); color: #fff; font-size: 0.88em;
+            outline: none; border: 1px solid rgba(255,255,255,0.08);
+        }
+        .chat-input-area input::placeholder { color: rgba(255,255,255,0.35); }
+        .chat-input-area input:focus { border-color: rgba(233,69,96,0.4); }
+        .chat-input-area button {
+            padding: 10px 18px; border: none; border-radius: 20px;
+            background: linear-gradient(135deg, #e94560, #c23152);
+            color: #fff; font-weight: bold; cursor: pointer; font-size: 0.88em;
+        }
+        .chat-input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ========== FOOTER ========== */
+        footer {
+            text-align: center; padding: 40px 20px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            color: #555; font-size: 0.88em;
+        }
+
+        /* ========== RESPONSIVO ========== */
+        @media (max-width: 600px) {
+            nav { padding: 12px 20px; }
+            nav .links { gap: 14px; }
+            .hero h1 { font-size: 2em; }
+            section { padding: 50px 20px; }
+            .reserva-section { padding: 30px 20px; }
+            .reserva-form .row { flex-direction: column; }
+            .chat-panel { right: 10px; left: 10px; width: auto; bottom: 90px; height: 60vh; }
+            .chat-toggle { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <div class="logo">
+        <span>🏨 Travesseiro Nervoso</span>
+    </div>
+    <div class="links">
+        <a href="#quartos">Quartos</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#reservar">Reservar</a>
+        <a href="#minhas-reservas">Minhas Reservas</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="topo">
+    <h1>Hotel Travesseiro Nervoso</h1>
+    <p class="slogan">"Aqui até a insônia dorme"</p>
+    <p>Um lugar onde o descontraído encontra o conforto. Quartos temáticos, café da manhã que faz até oximo levantar da cama, e um atendimento que vai te fazer querer nunca sair.</p>
+    <a href="#reservar" class="btn-hero">Faça sua Reserva</a>
+</div>
+
+<!-- QUARTOS -->
+<section id="quartos">
+    <div class="section-title">
+        <h2>Nossos Quartos</h2>
+        <p>Escolha seu refúgio do caos diário</p>
+    </div>
+    <div class="quartos-grid">
+        <div class="quarto-card">
+            <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80" alt="Quarto Standard">
+            <div class="info">
+                <h3>Quarto Standard</h3>
+                <div class="preco">R$ 500 / noite</div>
+                <p>Cama confortável, ar-condicionado, Wi-Fi e aquele travesseiro que promete te fazer esquecer o monde.</p>
+                <button class="btn-reservar" onclick="selecionarQuarto('Standard')">Reservar Agora</button>
+            </div>
+        </div>
+        <div class="quarto-card">
+            <img src="https://images.unsplash.com/photo-1590490360182-c33d955e5bde?w=600&q=80" alt="Quarto Deluxe">
+            <div class="info">
+                <h3>Quarto Deluxe</h3>
+                <div class="preco">R$ 700 / noite</div>
+                <p>Espaço generoso, banheira, varanda com vista e pernas de sono garantidas ou seu dinheiro.</p>
+                <button class="btn-reservar" onclick="selecionarQuarto('Deluxe')">Reservar Agora</button>
+            </div>
+        </div>
+        <div class="quarto-card">
+            <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=80" alt="Suíte Presidencial">
+            <div class="info">
+                <h3>Suíte Presidencial</h3>
+                <div class="preco">R$ 1.000 / noite</div>
+                <p>O ápice do luxo nervoso. Piscina privativa, minibar, e um colchão tão bom que seu patrão vai perguntar onde você foi parar.</p>
+                <button class="btn-reservar" onclick="selecionarQuarto('Presidencial')">Reservar Agora</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SERVIÇOS -->
+<section id="servicos">
+    <div class="section-title">
+        <h2>Serviços</h2>
+        <p>Tudo que você precisa para não querer ir embora</p>
+    </div>
+    <div class="servicos-grid">
+        <div class="servico-card">
+            <div class="icone">🏋️</div>
+            <h4>Academia</h4>
+            <p>Queime as calorias do café da manhã antes de comer de novo.</p>
+        </div>
+        <div class="servico-card">
+            <div class="icone">☕</div>
+            <h4>Café da Manhã</h4>
+            <p>Tão bom que o bufê resolveu ficar acordado.</p>
+        </div>
+        <div class="servico-card">
+            <div class="icone">👕</div>
+            <h4>Lavanderia</h4>
+            <p>Deixe suas roupas com a gente e vá dormir de novo.</p>
+        </div>
+        <div class="servico-card">
+            <div class="icone">🍽️</div>
+            <h4>Restaurante</h4>
+            <p>Cozinha autoral que faz qualquer estômago se render.</p>
+        </div>
+        <div class="servico-card">
+            <div class="icone">🏊</div>
+            <h4>Piscina</h4>
+            <p>Água tão relaxante que até o Wi-Fi desacelera.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FORMULÁRIO DE RESERVA -->
+<section id="reservar">
+    <div class="section-title">
+        <h2>Faça sua Reserva</h2>
+        <p>É rápido, fácil e sem burocracia. Só escolha e venha.</p>
+    </div>
+    <div class="reserva-section">
+        <form class="reserva-form" id="reservaForm" onsubmit="enviarReserva(event)">
+            <div class="field">
+                <label>Nome completo</label>
+                <input type="text" id="rNome" placeholder="Seu nome" required>
+            </div>
+            <div class="field">
+                <label>Tipo de quarto</label>
+                <select id="rQuarto" required>
+                    <option value="">Selecione um quarto</option>
+                    <option value="Standard">Standard - R$ 500/noite</option>
+                    <option value="Deluxe">Deluxe - R$ 700/noite</option>
+                    <option value="Presidencial">Suíte Presidencial - R$ 1.000/noite</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label>Check-in</label>
+                    <input type="date" id="rCheckin" required>
+                </div>
+                <div class="field">
+                    <label>Check-out</label>
+                    <input type="date" id="rCheckout" required>
+                </div>
+            </div>
+            <div class="msg-sucesso" id="msgSucesso">✅ Reserva realizada com sucesso! Aproveite o sono.</div>
+            <div class="msg-erro" id="msgErro">❌ Erro ao realizar reserva. Tente novamente.</div>
+            <button type="submit" class="btn-confirmar" id="btnReservar">Confirmar Reserva</button>
+        </form>
+    </div>
+</section>
+
+<!-- MINHAS RESERVAS -->
+<section id="minhas-reservas">
+    <div class="section-title">
+        <h2>Minhas Reservas</h2>
+        <p>Suites confirmadas e prontas para receber seu sono</p>
+    </div>
+    <div class="reservas-lista" id="reservasLista">
+        <div class="sem-reservas">Carregando reservas...</div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 Hotel Travesseiro Nervoso — Onde a insônia vem de carteirinha e vai embora chorando.</p>
+</footer>
+
+<!-- BOTÃO CHAT -->
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat()">💬</button>
+
+<!-- PAINEL CHAT -->
+<div class="chat-panel" id="chatPanel">
+    <div class="chat-panel-header">
+        <h3>🏨 Recepcionista Virtual</h3>
+        <button class="fechar" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+        <div class="chat-welcome">Olá! Como posso te ajudar?<br>Pergunte sobre quartos, preços ou serviços.</div>
+    </div>
+    <div class="chat-typing" id="chatTyping">
+        <div class="remetente">Recepcionista</div>
+        <div class="pontos">
+            <span>digitando</span>
+            <div class="ponto"></div><div class="ponto"></div><div class="ponto"></div>
+        </div>
+    </div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem..." autocomplete="off">
+        <button id="chatSend" onclick="enviarChat()">Enviar</button>
+    </div>
+</div>
+
+<script>
+    /* ========== CHAT ========== */
+    const chatMsgs = document.getElementById('chatMsgs');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatTyping = document.getElementById('chatTyping');
+    const chatPanel = document.getElementById('chatPanel');
+
+    chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); enviarChat(); }
+    });
+
+    function toggleChat() {
+        chatPanel.classList.toggle('aberto');
+        if (chatPanel.classList.contains('aberto')) chatInput.focus();
+    }
+
+    function adicionarMsgChat(texto, remetente) {
+        const div = document.createElement('div');
+        div.classList.add('chat-msg', remetente);
+        const r = document.createElement('div');
+        r.classList.add('remetente');
+        r.textContent = remetente === 'hotel' ? 'Recepcionista' : 'Você';
+        const c = document.createElement('div');
+        c.textContent = texto;
+        div.appendChild(r);
+        div.appendChild(c);
+        chatMsgs.appendChild(div);
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    }
+
+    async function enviarChat() {
+        const texto = chatInput.value.trim();
+        if (!texto) return;
+        adicionarMsgChat(texto, 'usuario');
+        chatInput.value = '';
+        chatSend.disabled = true;
+        chatTyping.style.display = 'block';
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        try {
+            const resp = await fetch('/agente', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pergunta: texto })
+            });
+            const data = await resp.json();
+            chatTyping.style.display = 'none';
+            adicionarMsgChat(data.resposta, 'hotel');
+        } catch(e) {
+            chatTyping.style.display = 'none';
+            adicionarMsgChat('Desculpe, tivemos um problema. O travesseiro nervoso falhou.', 'hotel');
+        }
+        chatSend.disabled = false;
+        chatInput.focus();
+    }
+
+    /* ========== RESERVAS ========== */
+    function selecionarQuarto(nome) {
+        document.getElementById('rQuarto').value = nome;
+        document.getElementById('reservar').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function enviarReserva(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnReservar');
+        const msgOk = document.getElementById('msgSucesso');
+        const msgErr = document.getElementById('msgErro');
+        msgOk.style.display = 'none';
+        msgErr.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Reservando...';
+
+        const dados = {
+            nome: document.getElementById('rNome').value.trim(),
+            quarto: document.getElementById('rQuarto').value,
+            checkin: document.getElementById('rCheckin').value,
+            checkout: document.getElementById('rCheckout').value
+        };
+
+        try {
+            const resp = await fetch('/reservas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+            if (resp.ok) {
+                msgOk.style.display = 'block';
+                document.getElementById('reservaForm').reset();
+                carregarReservas();
+            } else {
+                msgErr.style.display = 'block';
+            }
+        } catch(e) {
+            msgErr.style.display = 'block';
+        }
+        btn.disabled = false;
+        btn.textContent = 'Confirmar Reserva';
+    }
+
+    async function carregarReservas() {
+        const lista = document.getElementById('reservasLista');
+        try {
+            const resp = await fetch('/reservas');
+            const dados = await resp.json();
+            if (!dados.length) {
+                lista.innerHTML = '<div class="sem-reservas">Nenhuma reserva encontrada. Que tal fazer a primeira?</div>';
+                return;
+            }
+            lista.innerHTML = '';
+            dados.forEach(r => {
+                const div = document.createElement('div');
+                div.classList.add('reserva-item');
+                div.innerHTML = `
+                    <div class="dados">
+                        <div class="nome">${r.nome}</div>
+                        <div class="detalhes">Check-in: ${r.checkin} &nbsp;|&nbsp; Check-out: ${r.checkout}</div>
+                    </div>
+                    <div class="quarto-tag">${r.quarto}</div>
+                `;
+                lista.appendChild(div);
+            });
+        } catch(e) {
+            lista.innerHTML = '<div class="sem-reservas">Erro ao carregar reservas.</div>';
+        }
+    }
+
+    carregarReservas();
+</script>
+
+</body>
+</html>
