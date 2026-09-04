@@ -7,8 +7,7 @@ import os
 from supabase import create_client
 
 load_dotenv()
-
-supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+supabase = create_client(os.getenv("SUPABASE_URL"),os.getenv("SUPABASE_KEY"))
 
 app = Flask(__name__)
 CORS(app)
@@ -20,7 +19,7 @@ agente = Agent(
     "Quarto Standard ($500), Quarto Deluxe ($700), Quarto Suíte Presidencial ($1000)"
     "Serviços oferecidos: Academia, Café da Manhã, Lavanderia, Restaurante, Piscina"
     "Não inclua icones em markdown nas respostas, como: ##, **",
-    markdown=True
+    markdown=False
 )
 
 @app.route("/",methods=['GET'])
@@ -34,16 +33,14 @@ def retorno():
     resposta = agente.run(pergunta)
     return jsonify({"resposta":resposta.content})
 
-#GRAVA UMA RESERVA 
-@app.route("/reservas", methods=['POST'])
-def criar_reserva():
+@app.route("/reservar",methods=['POST'])
+def reservar():
     dados = request.get_json()
     supabase.table("reservas").insert(dados).execute()
-    return jsonify({"mensagem":"Reserva salva!"})
+    return jsonify({"mensagem":"Dados inseridos com sucesso!"})
 
-#LISTA AS RESERVAS
-@app.route("/reservas", methods=['GET'])
-def listar_reservas():
+@app.route("/reservar", methods=['GET'])
+def listar():
     resultado = supabase.table("reservas").select("*").execute()
     return jsonify(resultado.data)
 
